@@ -1,6 +1,6 @@
 buildscript {
     ext.kotlin_version = "1.2.70"
-    ext.kotlin_coroutines_version = "0.26.0"
+    ext.kotlin_coroutines_version = "0.30.2"
     ext.spock_version = '1.1-groovy-2.4'
     ext.spring_version = "5.0.9.RELEASE"
     ext.spring_data_version = "2.0.10.RELEASE"
@@ -45,6 +45,9 @@ subprojects {
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+        // https://mvnrepository.com/artifact/junit/junit
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+
     }
 
     kotlin {
@@ -69,6 +72,8 @@ project(":spring-kotlin-coroutine") {
     dependencies {
         compile "org.springframework:spring-context-support:$spring_version"
         compile "org.springframework:spring-web:$spring_version", optional
+        // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlin_coroutines_version", optional
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx1:$kotlin_coroutines_version", optional
@@ -584,6 +589,50 @@ project(":spring-kotlin-coroutine-demo") {
         compile "javax.servlet:javax.servlet-api:3.1.0"
     }
 }
+
+project(":spring-kotlin-coroutine-server-sample") {
+    apply plugin: "org.springframework.boot"
+    apply plugin: 'pl.allegro.tech.build.axion-release'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'groovy'
+    apply plugin: 'nebula.optional-base'
+    apply plugin: 'maven-publish'
+
+    group "org.springframework.kotlin"
+    project.version = scmVersion.version
+
+
+    compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
+
+    dependencies {
+        compile project(":spring-kotlin-coroutine")
+        compile project(":spring-webmvc-kotlin-coroutine")
+        compile project(":spring-webflux-kotlin-coroutine")
+
+        compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1'
+        compile 'com.fireflysource:firefly-kotlin-ext:4.8.1'
+        compile 'com.fireflysource:firefly-reactive:4.8.1'
+        compile 'com.zaxxer:HikariCP:2.6.1'
+        // https://mvnrepository.com/artifact/com.h2database/h2
+        compile group: 'com.h2database', name: 'h2', version: '1.4.197'
+
+        // https://mvnrepository.com/artifact/io.projectreactor.addons/reactor-test
+        testCompile group: 'io.projectreactor', name: 'reactor-test', version: '3.1.0.RELEASE'
+        // https://mvnrepository.com/artifact/io.kotlintest/kotlintest-assertions
+        testCompile group: 'io.kotlintest', name: 'kotlintest-assertions', version: '3.1.10'
+        //compile 'io.projectreactor:reactor-core:3.0.7.RELEASE'
+
+
+        compile "net.sf.ehcache:ehcache:2.10.3"
+        compile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter-reactor-netty:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
+
+        compile "javax.servlet:javax.servlet-api:3.1.0"
+    }
+}
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = "4.5"

@@ -38,17 +38,25 @@ private fun TaskScheduler.asCoroutineDispatcher(): CoroutineContext =
 
 
 internal class TaskSchedulerDispatcher(private val scheduler: TaskScheduler) : CoroutineDispatcher(), Delay {
+    override fun scheduleResumeAfterDelay(timeMillis: Long, continuation: CancellableContinuation<Unit>) {
+        val disposable = scheduler.schedule({
+            with(continuation) { resumeUndispatched(Unit) }
+        }, Date(System.currentTimeMillis() + timeMillis)).asDisposableHandle()
+
+        continuation.disposeOnCancellation(disposable)
+    }
+
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         scheduler.schedule(block, Date())
     }
 
-    override fun scheduleResumeAfterDelay(time: Long, unit: TimeUnit, continuation: CancellableContinuation<Unit>) {
-        val disposable = scheduler.schedule({
-            with(continuation) { resumeUndispatched(Unit) }
-        }, Date(System.currentTimeMillis() + unit.toMillis(time))).asDisposableHandle()
-
-        continuation.disposeOnCancellation(disposable)
-    }
+//    override fun scheduleResumeAfterDelay(time: Long, unit: TimeUnit, continuation: CancellableContinuation<Unit>) {
+//        val disposable = scheduler.schedule({
+//            with(continuation) { resumeUndispatched(Unit) }
+//        }, Date(System.currentTimeMillis() + unit.toMillis(time))).asDisposableHandle()
+//
+//        continuation.disposeOnCancellation(disposable)
+//    }
 
     override fun invokeOnTimeout(time: Long, unit: TimeUnit, block: Runnable): DisposableHandle =
         scheduler.schedule(block, Date(System.currentTimeMillis() + unit.toMillis(time))).asDisposableHandle()

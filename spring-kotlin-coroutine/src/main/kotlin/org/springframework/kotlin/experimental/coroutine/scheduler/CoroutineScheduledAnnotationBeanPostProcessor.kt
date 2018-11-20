@@ -47,6 +47,7 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.experimental.suspendCoroutine
 
 open internal class CoroutineScheduledAnnotationBeanPostProcessor(
         private val scheduledDispatcherName: String,
@@ -171,8 +172,8 @@ data class ScheduledCoroutine(
         val invocableMethod: Method,
         val policy: SchedulingPolicy
 ) {
-    suspend fun run(): Unit = suspendCancellableCoroutine(true) { continuation ->
-        continuation.initCancellability()
+    suspend fun run(): Unit = suspendCoroutine{ continuation ->
+        //continuation.initCancellability()
         try {
             invocableMethod.invoke(bean, continuation)
         } catch (e: InvocationTargetException) {

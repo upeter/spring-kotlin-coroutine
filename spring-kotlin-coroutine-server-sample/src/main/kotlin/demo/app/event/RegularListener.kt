@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package org.springframework.kotlin.experimental.coroutine.context.resolver
+package demo.app.event
 
-import io.reactivex.Scheduler
-import kotlinx.coroutines.experimental.rx2.asCoroutineDispatcher
-import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolver
-import kotlin.coroutines.experimental.CoroutineContext
+import demo.app.util.logger
+import demo.app.controller.DemoApplicationEvent
+import demo.app.controller.SimpleEvent
+import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
 
-internal open class Rx1SchedulerCoroutineContextResolver : CoroutineContextResolver {
-    override fun resolveContext(beanName: String, bean: Any?): CoroutineContext? =
-            (bean as? Scheduler)?.asCoroutineDispatcher()
+@Component
+open class RegularListener {
+    @EventListener
+    open fun handle(event: SimpleEvent) {
+        logger.info ("Received event $event")
+    }
+
+
+    @EventListener
+    open fun handleDemoEvent(event: DemoApplicationEvent) {
+        logger.info ("Received demoEvent $event")
+    }
+
+    companion object {
+        private val logger = logger()
+    }
 }
