@@ -37,35 +37,38 @@ class DBTest {
         exec {
             it.asyncUpdate("DROP SCHEMA IF EXISTS test")
             it.asyncUpdate("CREATE SCHEMA IF NOT EXISTS test")
-            //it.asyncUpdate("set mode MySQL")
             val table = "CREATE TABLE IF NOT EXISTS `test`.`user`(" +
                     "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                     "pt_first_name VARCHAR(255), " +
                     "pt_last_name VARCHAR(255), " +
                     "pt_avatar_url VARCHAR(255))"
             it.asyncUpdate(table)
-            val params = Array<Array<Any>>(3) { Array(3) { } }
-            for (i in 0 until 3) {
-                params[i][0] = "test transaction " + i
-                params[i][1] = "pwd transaction " + i
-                params[i][2] = "info transaction " + i
+            val params = Array<Array<Any>>(2) { Array(2) { } }
+            (0..1).forEach{
+                params[it][0] = "John " + it
+                params[it][1] = "Doe " + it
             }
-            val sql = "insert into `test`.`user`(pt_first_name, pt_last_name, pt_avatar_url) values(?,?,?)"
-            val id = it.insertBatch(sql, params, { rs ->
-                rs.map { r -> r.getInt(1) }
-            }).await()
+            val sql = "insert into `test`.`user`(pt_first_name, pt_last_name) values(?,?)"
+            val id = it.insertBatch(sql, params) { it.map { it.getInt(1) } }.await()
             println(id)
         }
     }
 
 
-
-
-
     @Test
     fun testQueryById() = runBlocking {
         val user = exec { it.asyncQueryById<User>(1L) }
-        user.firstName shouldBe "test transaction 0"
+        user.firstName shouldBe "John 0"
+    }
+
+    @Test
+    fun testInsertObject() = runBlocking {
+        val newUser = User(null, "test insert", "test insert pwd", null)
+        val newUserId = exec { it.asyncInsertObject<User, Long>(newUser) }
+        newUserId shouldBe 3
+
+        val user = exec { it.asyncQueryById<User>(newUserId) }
+        user.firstName shouldBe "test insert"
     }
 
     @Test
@@ -76,16 +79,6 @@ class DBTest {
 
         val updatedUser = exec { it.asyncQueryById<User>(1L) }
         updatedUser.awatarUrl shouldBe "abc"
-    }
-
-    @Test
-    fun testInsertObject() = runBlocking {
-        val newUser = User(null, "test insert", "test insert pwd", null)
-        val newUserId = exec { it.asyncInsertObject<User, Long>(newUser) }
-        newUserId shouldBe 4
-
-        val user = exec { it.asyncQueryById<User>(newUserId) }
-        user.firstName shouldBe "test insert"
     }
 
 

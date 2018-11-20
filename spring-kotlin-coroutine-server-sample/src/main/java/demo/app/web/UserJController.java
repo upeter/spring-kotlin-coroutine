@@ -29,7 +29,10 @@ public class UserJController {
         return userDao.findById(id)
                 .flatMap(user -> awatarDao.randomAwatar()
                         .flatMap(awatar ->
-                                userDao.updateUser(UserBuilder.from(user).withAwatarUrl(awatar.getUrl()).build()))
+                                userDao.updateUser(UserBuilder
+                                        .from(user)
+                                        .withAwatarUrl(awatar.getUrl())
+                                        .build()))
 
                 ).flux();
     }

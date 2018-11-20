@@ -42,8 +42,7 @@ import java.util.*
 @EnableCoroutine
 @EnableCaching
 @EnableScheduling
-//@EnableWebMvc
-open class ApplicationConfiguration: DelegatingWebFluxConfiguration() {
+open class ApplicationConfiguration : DelegatingWebFluxConfiguration() {
     @Bean
     open fun cacheManager(): CacheManager = EhCacheCacheManager(ehCacheManager().`object`)
 
@@ -56,11 +55,11 @@ open class ApplicationConfiguration: DelegatingWebFluxConfiguration() {
 
     @Bean
     override fun createRequestMappingHandlerAdapter(): RequestMappingHandlerAdapter {
-      return  super.createRequestMappingHandlerAdapter()
+        return super.createRequestMappingHandlerAdapter()
     }
 
     @Bean
-    open fun createHikariDataSource():HikariDataSource{
+    open fun createHikariDataSource(): HikariDataSource {
         val config = HikariConfig()
         config.jdbcUrl = "jdbc:h2:mem:${UUID.randomUUID().toString().replace("-", "")}"
         config.driverClassName = "org.h2.Driver"
@@ -69,34 +68,19 @@ open class ApplicationConfiguration: DelegatingWebFluxConfiguration() {
     }
 
     @Bean
-    open fun createJdbcClient(ds: HikariDataSource):JDBCClient{
+    open fun createJdbcClient(ds: HikariDataSource): JDBCClient {
         return JDBCClient(ds)
     }
 
 
     @Bean
-    open fun reactiveSqlClient(ds: HikariDataSource):ReactiveSQLClient {
+    open fun reactiveSqlClient(ds: HikariDataSource): ReactiveSQLClient {
         return Reactor.db.fromSQLClient(JDBCClient(ds))
     }
 
 
-//    @Bean
-//    open fun handlerAdapter(): RequestMappingHandlerAdapter {
-//        val handlerAdapter = RequestMappingHandlerAdapter()
-//        handlerAdapter.setConversionService(conversionService())
-//        return handlerAdapter
-//    }
-
-//    @Bean
-//    open fun abc(): WebMvcConfigurer {
-//        return CoroutinesWebMvcConfigurer()
-//    }
 }
 
 fun main(vararg args: String) {
-
-//    val app = SpringApplication(ApplicationConfiguration::class.java!!)
-//    app.setWebApplicationType(WebApplicationType.NONE)
-//    app.run(* args)
     SpringApplication.run(ApplicationConfiguration::class.java, *args)
 }

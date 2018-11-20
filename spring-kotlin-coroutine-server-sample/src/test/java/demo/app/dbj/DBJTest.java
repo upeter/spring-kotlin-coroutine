@@ -75,9 +75,12 @@ public class DBJTest {
         User newUser = new User(null, "test insert", "test insert pwd", null);
         Mono<Long> newUserId = exec(c -> c.insertObject(newUser));
         StepVerifier.create(newUserId)
-                .assertNext(i -> {
-                    Assert.assertThat(i, is(3l));
-                })
+                .assertNext(i -> Assert.assertThat(i, is(3l)))
+                .verifyComplete();
+
+        Mono<User> user = exec(c -> c.queryById(newUserId.block(), User.class));
+        StepVerifier.create(user)
+                .assertNext(u -> Assert.assertThat(u.getFirstName(), is("test insert")))
                 .verifyComplete();
     }
 

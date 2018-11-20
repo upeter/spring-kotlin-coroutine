@@ -15,10 +15,7 @@ import org.springframework.web.coroutine.function.client.CoroutineWebClient
 @Component
 open class UserDao(val sqlClient: JDBCClient) {
 
-
-    suspend fun findUserById(id: Long): User? = exec {
-        it.asyncQueryById<User>(id)
-    }
+    suspend fun findUserById(id: Long): User? = exec { it.asyncQueryById<User>(id) }
 
     suspend fun updateUser(user: User): User = exec {
         it.asyncUpdateObject(user)
@@ -32,12 +29,13 @@ open class UserDao(val sqlClient: JDBCClient) {
 
     }
 
-
 }
 
 @Component
 open class AwatarDao {
+
     private val client by lazy { CoroutineWebClient.create("http://localhost:8081") }
+
     open suspend fun randomAvatar(): Awatar =
             client.get()
                     .uri("/awatar")
