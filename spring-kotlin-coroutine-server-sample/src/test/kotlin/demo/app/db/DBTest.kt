@@ -74,11 +74,11 @@ class DBTest {
     @Test
     fun testUpdateObject() = runBlocking {
         val initialUser = exec { it.asyncQueryById<User>(1L) }
-        val rows = exec { it.asyncUpdateObject(initialUser.copy(awatarUrl = "abc")) }
+        val rows = exec { it.asyncUpdateObject(initialUser.copy(avatarUrl = "abc")) }
         rows shouldBe 1
 
         val updatedUser = exec { it.asyncQueryById<User>(1L) }
-        updatedUser.awatarUrl shouldBe "abc"
+        updatedUser.avatarUrl shouldBe "abc"
     }
 
 

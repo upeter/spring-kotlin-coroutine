@@ -1,6 +1,6 @@
 package demo.app.client
 
-import demo.app.domain.Awatar
+import demo.app.domain.Avatar
 import kotlinx.coroutines.*
 import kotlinx.coroutines.experimental.*
 import org.springframework.http.HttpMethod
@@ -20,9 +20,9 @@ fun main(args: Array<String>) {
     runBlocking {
         val avatar = CoroutineWebClient.create("http://localhost:8081")
                 .get()
-                .uri("/awatar")
+                .uri("/avatar")
                 .retrieve()
-                .body(Awatar::class.java)!!
+                .body(Avatar::class.java)!!
         println(avatar)
     }
 

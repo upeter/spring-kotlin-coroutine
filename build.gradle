@@ -638,3 +638,13 @@ task wrapper(type: Wrapper) {
     gradleVersion = "4.5"
     distributionType = "ALL"
 }
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}

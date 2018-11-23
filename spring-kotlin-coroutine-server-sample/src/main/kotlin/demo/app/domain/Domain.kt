@@ -13,8 +13,8 @@ import java.util.*
 data class User @JsonCreator @JvmOverloads constructor(@JsonProperty("id") @Id("id") var id: Long? = null,
                                          @JsonProperty("firstName")@Column("pt_first_name") var firstName: String = "",
                                          @JsonProperty("lastName")@Column("pt_last_name") var lastName: String = "",
-                                         @JsonProperty("awatarUrl")@Column("pt_avatar_url") var awatarUrl: String? = null) {
+                                         @JsonProperty("avatarUrl")@Column("pt_avatar_url") var avatarUrl: String? = null) {
 
 }
 
-data class Awatar @JsonCreator constructor(@JsonProperty("url") val url: String)
+data class Avatar @JsonCreator constructor(@JsonProperty("url") val url: String)

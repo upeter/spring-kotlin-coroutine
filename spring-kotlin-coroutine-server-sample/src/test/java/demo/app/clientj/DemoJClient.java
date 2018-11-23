@@ -1,17 +1,17 @@
 package demo.app.clientj;
 
-import demo.app.domain.Awatar;
+import demo.app.domain.Avatar;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class DemoJClient {
 
     public static void main(String [] args) {
-        final Awatar awatar = WebClient
+        final Avatar avatar = WebClient
                 .create("http://localhost:8081")
                 .get()
-                .uri("/awatar")
+                .uri("/avatar")
                 .retrieve()
-                .bodyToFlux(Awatar.class).blockFirst();
-        System.out.println(awatar);
+                .bodyToFlux(Avatar.class).blockFirst();
+        System.out.println(avatar);
     }
 }

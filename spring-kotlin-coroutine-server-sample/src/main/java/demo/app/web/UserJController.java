@@ -9,12 +9,12 @@ import reactor.core.publisher.Flux;
 public class UserJController {
 
     private final UserJDao userDao;
-    private final AwatarJDao awatarDao;
+    private final AvatarJDao avatarDao;
 
     @Autowired
-    public UserJController(UserJDao userDao, AwatarJDao awatarDao) {
+    public UserJController(UserJDao userDao, AvatarJDao avatarDao) {
         this.userDao = userDao;
-        this.awatarDao = awatarDao;
+        this.avatarDao = avatarDao;
     }
 
     @GetMapping("/usersj/{user-id}")
@@ -23,15 +23,15 @@ public class UserJController {
         return userDao.findById(id).flux();
     }
 
-    @PatchMapping("/usersj/{user-id}/sync-awatar")
+    @PatchMapping("/usersj/{user-id}/sync-avatar")
     @ResponseBody
-    public Flux<User> syncAwatar(@PathVariable("user-id") Long id) {
+    public Flux<User> syncAvatar(@PathVariable("user-id") Long id) {
         return userDao.findById(id)
-                .flatMap(user -> awatarDao.randomAwatar()
-                        .flatMap(awatar ->
+                .flatMap(user -> avatarDao.randomAvatar()
+                        .flatMap(avatar ->
                                 userDao.updateUser(UserBuilder
                                         .from(user)
-                                        .withAwatarUrl(awatar.getUrl())
+                                        .withAvatarUrl(avatar.getUrl())
                                         .build()))
 
                 ).flux();
@@ -46,11 +46,11 @@ public class UserJController {
         }
 
         static UserBuilder from(User user) {
-            User newUser = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getAwatarUrl());
+            User newUser = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getAvatarUrl());
             return new UserBuilder(newUser);
         }
 
-        public UserBuilder withAwatarUrl(String url) {
+        public UserBuilder withAvatarUrl(String url) {
             newUser = new User(newUser.getId(), newUser.getFirstName(), newUser.getLastName(), url);
             return this;
         }

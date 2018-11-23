@@ -89,14 +89,14 @@ public class DBJTest {
         Mono<User> userMono = exec(c -> c.queryById(1, User.class));
         StepVerifier.create(userMono).assertNext(u -> Assert.assertThat(u.getId(), is(1L))).verifyComplete();
         User user = userMono.as(i -> i.block());
-        user.setAwatarUrl("abc");
+        user.setAvatarUrl("abc");
 
         Mono<Integer> row = exec(c -> c.updateObject(user));
         StepVerifier.create(row).expectNext(1).verifyComplete();
 
         Mono<User> userMono2 = exec(c -> c.queryById(1, User.class));
         StepVerifier.create(userMono2)
-                .assertNext(u -> Assert.assertThat(u.getAwatarUrl(), is("abc")))
+                .assertNext(u -> Assert.assertThat(u.getAvatarUrl(), is("abc")))
                 .verifyComplete();
 
     }

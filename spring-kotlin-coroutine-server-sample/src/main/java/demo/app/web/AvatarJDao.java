@@ -1,25 +1,25 @@
 package demo.app.web;
 
-import demo.app.domain.Awatar;
+import demo.app.domain.Avatar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class AwatarJDao {
+public class AvatarJDao {
     private WebClient webClient;
 
-    public AwatarJDao() {
+    public AvatarJDao() {
         webClient = WebClient
                 .create("http://localhost:8081");
     }
 
-    public Mono<Awatar> randomAwatar() {
+    public Mono<Avatar> randomAvatar() {
         return
                 webClient.get()
-                        .uri("/awatar")
+                        .uri("/avatar")
                         .retrieve()
-                        .bodyToMono(Awatar.class);
+                        .bodyToMono(Avatar.class);
     }
 }
